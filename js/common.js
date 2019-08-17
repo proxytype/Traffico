@@ -209,7 +209,7 @@ function capitalizeFirstLetter(string) {
 function humanDate(noDate) {
     var d = new Date(noDate);
 
-    return fixNumaricPrefix(d.getDay(), 10, "0") 
+    return fixNumaricPrefix(d.getDate(), 10, "0") 
     + "-" + fixNumaricPrefix(d.getMonth(), 10, "0") 
     + "-" + d.getFullYear() 
     + " " + fixNumaricPrefix(d.getHours(), 10, "0") 

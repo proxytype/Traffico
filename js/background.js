@@ -129,13 +129,11 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
                 isCancel = processFilterRquest(details.url.toLowerCase(), details.type);
             }
         }
+
         
         return isCancel;
 
     }
-
-    
-
 },
     { urls: ["<all_urls>"] },
     ["blocking"]
@@ -257,6 +255,11 @@ function handleMessageRequest(handler) {
     if (graph.length > settings.graphRequestRowsCount) {
         graph.shift();
     }
+
+    if(events.length > settings.maximumEventsRows) {
+        events.length = settings.maximumEventsRows;
+    }
+    
 
 }
 
