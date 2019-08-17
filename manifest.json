@@ -1,0 +1,40 @@
+{
+    "name": "Traffico",
+    "description": "Privacy Monitor And Firewall",
+    "manifest_version": 2,
+    "version": "1.0",
+  
+    "permissions": [
+      "*://*/*",
+      "webRequest",
+      "webRequestBlocking",
+      "storage",
+      "cookies",
+      "tabs"
+    ],
+  
+    "browser_action": {
+      "default_popup": "html/menu.html"
+    },
+  
+    "background": {
+      "scripts": [ "js/jquery.js", "js/common.js", "js/settings.js", "js/background.js", "js/worker.js" ],
+      "persistent": true
+    },
+    "content_security_policy": "script-src https://www.gstatic.com/ 'self'; object-src 'self'",
+  
+    "content_scripts": [
+      {
+        "css": [ "css/exui.css" ],
+        "js": [ "js/jquery.js", "js/common.js", "js/views/filters.js", "js/views/dashboard.js", "js/foreground.js" ,"js/popup.js", "js/dictonary.js", "js/navigator.js", "js/settings.js"],
+        "matches": [ "http://*/*", "https://*/*" ]
+      }
+    ],
+
+    "icons": {
+      "16": "assets/logo-16.png",
+      "48": "assets/logo-48.png",
+      "128": "assets/logo-128.png"
+    }
+
+  }

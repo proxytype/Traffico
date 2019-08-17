@@ -1,0 +1,407 @@
+<html>
+
+
+<head>
+    <title>Israeli News Ad's Blocker</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,  user-scalable=no,width=device-width">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Lalezar|Teko&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../css/exui.css" />
+</head>
+
+<body class="ex-ui-body">
+    
+    <div id="header" class="ex-ui-header">
+        <div id="hamburger" class="ex-ui-hamburger"></div>
+        <div id="back" class="ex-ui-back" style="display: none"></div>
+        <div id="header_title" class="ex-ui-title" style="margin-left: 25px">
+            <span id="header_title_span">Traffico</span><span style="color: #bb2f2f">.</span>
+        </div>
+        
+    </div>
+
+    <div id="menu" class="ex-ui-menu" style="display: none">
+        <div id="btn_home" class="ex-ui-menu-item" to="panel_home">
+            <div class="ex-ui-menu-arrow"></div>
+            <div style="float:left">
+                Dashboard
+            </div>  
+        </div>
+        <div id="btn_filters" class="ex-ui-menu-item" to="panel_filters">
+                <div class="ex-ui-menu-arrow"></div>
+                <div style="float:left">
+                        Filters
+                </div> 
+        </div> 
+
+        <div id="btn_settings" class="ex-ui-menu-item" to="panel_settings">
+                <div class="ex-ui-menu-arrow"></div>
+                <div style="float:left">
+                        Settings
+                </div> 
+        </div>
+        <div id="btn_about" class="ex-ui-menu-item" style="margin-top:202px;" to="panel_about">
+                <div class="ex-ui-menu-arrow"></div>
+                <div style="float:left">
+                        About
+                </div> 
+        </div>
+    </div>
+
+    <div id="loader" style="padding-top:122px; padding-left: 78px; position: absolute">
+            <img src="/assets/Blocks-1s-200px.svg" width="120" />
+    </div>
+
+    <div id="popup" class="ex-ui-popup" style="display: none">
+        <div id="wrapper_popup" class="ex-ui-wrapper-popup">
+                <div id="popup_header" class="ex-ui-popup-header">
+                    <div id="lbl_popup_title" class="ex-ui-popup-title" ></div>
+                    <div id="btn_popup_close" style="float:right; margin-top: 7px; margin-right: 7px" class="ex-ui-icon-delete-filter"></div>
+                </div>
+                <div id="lbl_popup_message" class="ex-ui-popup-message">
+                </div>
+                <div style="width:100%; text-align: center">
+                        <input style="width: 90px" type="button" class="ex-ui-filter-add" id="btn_popup_ok" value="Ok"/> <input style="width: 90px" type="button" class="ex-ui-filter-add" id="btn_popup_cancel" value="Cancel"/>
+                </div>
+                       
+                </div>
+        </div>
+    </div>
+
+    <div id="panel_home" class="ex-ui-panel" style="display: none" menu="Traffico">
+            <div style="display: inline-block; width: 100%">
+                    <div style="float:left; padding-right: 5px; margin-top: 7px"><img src="../assets/arrow_green.png" /></div>
+                    <div id="lbl_dashboard_status" style="float: left; font-size:24px; color:#484848"> Online</div>
+                    <div style="float: right; margin-right: 8px; margin-top:8px"><div id="btn_log_delete" class="ex-ui-icon-trash" title="Clear log"></div></div>
+                    <div style="float: right; margin-top:8px"><div id="btn_log_download" class="ex-ui-icon-download" title="Download log"></div></div>
+            </div>
+
+            <div id="chart_requests" style="width: 270px; height:90px; text-align: center">
+            </div>
+            <div style="width:100%; font-size:12px; display: inline-block">
+                <div style="float: left">
+                        Requests: 
+                </div>
+                <div style="float:right; margin-right:12px">
+                        <span id="lbl_total_requests" style="color:#484848">...</span> | <span id="lbl_avg_requests" style="color:#484848">0</span>/s
+                </div>
+            </div>
+
+            <div id="panel_log"  style="display: block" menu="Monitor">
+                    <div id="wraper_log" class="ex-ui-wrapper">
+                            <div id="containers_log" style="font-size:12px; text-align: center">
+                            </div>
+                        </div>
+            </div>
+           
+    </div>
+
+    <div id="panel_info" class="ex-ui-panel" style="display: none" menu="Information">
+            <div style="width: 100%; display: inline-block; font-size: 16px">
+                <div style="margin-top: 8px;margin-right: 5px;float:left;"><img src="../assets/point.png" width="12" /></div>
+                <div style="float:left; font-size:18px; color:#484848" id="lbl_info_domain"></div>
+            </div>
+            <div style="width: 100%; margin-left: 15px; margin-right: 15px; display: inline-block">
+                <div style="float:left; margin-top: 3px; margin-right: 3px" class="ex-ui-menu-arrow-left"></div>
+                <div style="float:left;" id="lbl_info_reference"></div>
+                <div style="float:right; margin-right: 26px; margin-top: 2px" class="ex-ui-log-row-requests" id="lbl_info_total_requests"></div> 
+            </div>
+
+            <div id="info_urls" class="ex-ui-wrapper" style="height: 279px; margin-top: 5px">
+
+            </div>
+
+            <div id="btn_create_filter" class="ex-ui-menu-item" to="panel_filters">
+                <div class="ex-ui-menu-arrow"></div>
+                <div style="float:left">
+                        Create Filter
+                </div> 
+        </div>
+
+    </div>
+
+    <div id="panel_filters" class="ex-ui-panel" style="display: none" menu="Filters">
+            
+            <div style="width: 100%; display: inline-block">
+                    <div class="ex-ui-menu-arrow"></div>
+                    <div style="float:left; color:#484848">
+                            Pattern
+                    </div>
+                    <div style="float:left; margin-left: 3px; margin-top: 2px"><img src="../assets/help.png" width="16" title="Filters based on words that exists in url request&#013;Can be domain, word or specific url" /></div>
+                    <div id="btn_filters_log" style="float:right; margin-right: 7px" class="ex-ui-icon-log-filter" title="Filters events"></div>
+                    <div id="btn_package_download" style="float:right;" class="ex-ui-icon-download-filter" title="Download filters packages"></div>
+            </div>
+
+            <div style="width:100%; display: inline-block; margin-top: 5px">
+                    <div style="float:left;width:196px"><input type="text" id="txb_pattern" style="width:100%; height: 23px;" placeholder="domain\word\url" /></div>
+                    <div style="float:left; width: 70px; margin-left: 4px"><input type="button" class="ex-ui-filter-add" id="btn_filter_add" value="Save"/></div>
+            </div>
+            <div style="width:100%; display: inline-block; margin-top: 2px; font-size: 12px">
+                <div style="float:left">
+                        <div style="float:left;margin-right: 2px; padding-top:1px"><input id="chk_filter_block_all" type="checkbox" style="margin: 0" checked="checked" /></div>
+                        <div style="float: left; color:#484848">Block All</div>
+                </div>
+
+                <div style="float:left; margin-left: 5px">
+                        <div style="float:left; margin-left:3px; margin-right: 2px; padding-top:1px"><input id="chk_filter_delete_cookie" type="checkbox" style="margin: 0" checked="checked" /></div>
+                        <div style="float: left; color:#484848">Delete Cookie</div>
+                </div>
+
+                <div style="float:left; margin-left: 5px">
+                        <div style="float:left; margin-left:3px; margin-right: 2px; padding-top:1px"><input id="chk_filter_destroy_tab" type="checkbox" style="margin: 0" checked="checked" /></div>
+                        <div style="float: left; color:#484848">Destroy Tab</div>
+                </div>
+
+            </div>
+
+            <div id="wrapper_all_filters" class="ex-ui-wrapper-filters-types">
+        
+                    <div style="float: left;  width: 33%; color:#1d518c">
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_image" /></div>
+                            <div style="float: left;">Images</div>
+                        </div>
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_media" /></div>
+                            <div style="float: left;">Videos</div>
+                        </div>
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_script" /></div>
+                            <div style="float: left;">Scripts</div>
+                        </div>
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_xmlhttprequest" /></div>
+                            <div style="float: left;">Ajax</div>
+                        </div>
+    
+                    </div>
+    
+                    <div style="float: left; width: 33%; color:#1d518c">
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_sub_frame" /></div>
+                            <div style="float: left;">Frames</div>
+                        </div>
+    
+                        <div style="display: inline-block">
+                            <div style="float:left">
+                                <input type="checkbox" id="chk_stylesheet" /></div>
+                            <div style="float: left;">Stylesheet</div>
+                        </div>
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_font" /></div>
+                            <div style="float: left;">Font</div>
+                        </div>
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_ping" /></div>
+                            <div style="float: left;">Ping</div>
+                        </div>
+    
+                    </div>
+    
+                    <div style="float: left; width: 33%; color:#1d518c">
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_csp_report" /></div>
+                            <div style="float: left;">Reports</div>
+                        </div>
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_websocket" /></div>
+                            <div style="float: left;">Websocket</div>
+                        </div>
+    
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_object" /></div>
+                            <div style="float: left;">Object</div>
+                        </div>
+
+                        <div style="display: inline-block">
+                            <div style="float:left"><input type="checkbox" id="chk_other" /></div>
+                            <div style="float: left;">Other</div>
+                        </div>
+    
+                    </div>
+        </div>
+     
+        <div>
+            <div style="width: 100%; display: inline-block">
+            <div style="margin-top: 4px;margin-right: 5px;float:left;"><img src="../assets/point_black.png" width="12" /></div>
+                <div style="float: left;color:#484848">
+                        Black List
+                </div>
+            </div>
+
+            <div id="wrapper_filters_list" class="ex-ui-wrapper-filters-list"></div>
+         </div> 
+         
+         <input type="hidden" id="hid_filter_selected" value="" />
+
+    </div>
+
+    <div id="panel_events" class="ex-ui-panel" style="display:none" menu="Events">
+        
+        <div style="width:100%">
+            <div style="float:left; color:#484848">
+                Total:
+            </div>
+            <div id="lbl_events_total_blocks" style="float:left; margin-left: 3px">
+                    0
+            </div>
+            <div style="float: right; margin-right: 8px; margin-top:0px"><div id="btn_events_delete" class="ex-ui-icon-trash" title="Clear events"></div></div>
+        </div>
+        <div class="ex-ui-wrapper-event-list" id="wrapper_events_list">
+
+        </div>
+    </div>
+    
+    <div id="panel_settings" class="ex-ui-panel" style="display: none" menu="Settings">
+        <div style="height: 330px">
+
+                <div style="width: 100%; display: inline-block; margin-top: 5px;">
+                        <div style="font-size:12px; color:#484848;">
+                            <div style="float:left">Refresh Rate</div> 
+                            <div style="float:left; margin-left: 3px;"><img src="../assets/help.png" width="16" title="Refresh rate between the ui and the background service&#013;Short interval will increase the cpu performance" /></div>
+                        </div>
+                        <div style="width:100%; display: inline-block; margin-top: 2px;margin-left: 4px; font-size: 12px">
+                                <div style="float:left; margin-top:2px" class="ex-ui-menu-arrow-left"></div>
+                                <div style="float:left; margin-left:3px; margin-right: 2px; margin-top:2px">Interval:</div>
+                                <div style="float: left; margin-right: 5px" ><input id="txb_settings_refresh_rate" style="width:90px; font-size:12px" type="number" min="100" max="1000000"></div>
+                                <div style="float: left; margin-top:2px">ms</div>
+                        </div>
+                </div>
+
+                <div style="width: 100%; display: inline-block; margin-top: 5px;">
+                        <div style="font-size:12px; color:#484848;">
+                            <div style="float:left">Graph Points</div> 
+                            <div style="float:left; margin-left: 3px;"><img src="../assets/help.png" width="16" title="The numbers of points displaying in the graph,&#013;More points for preserving will increase the memory" /></div>
+                        </div>
+                        <div style="width:100%; display: inline-block; margin-top: 2px;margin-left: 4px; font-size: 12px">
+                                <div style="float:left; margin-top:2px" class="ex-ui-menu-arrow-left"></div>
+                                <div style="float:left; margin-left:3px; margin-right: 2px; margin-top:2px">Maximum:</div>
+                                <div style="float: left; margin-right: 5px" ><input id="txb_settings_max_graph" style="width:76px; font-size:12px" type="number" min="2" max="1000"></div>
+                                <div style="float: left; margin-top:2px">rows</div>
+                        </div>
+                </div>
+                
+                <div style="width: 100%; display: inline-block; margin-top: 5px;">
+                    <div style="font-size:12px; color:#484848;">
+                        <div style="float:left">Events History</div> 
+                        <div style="float:left; margin-left: 3px;"><img src="../assets/help.png" width="16" title="The numbers of blocking events,&#013;More rows for history will increase the storage memory" /></div>
+                    </div>
+                    <div style="width:100%; display: inline-block; margin-top: 2px;margin-left: 4px; font-size: 12px">
+                            <div style="float:left; margin-top:2px" class="ex-ui-menu-arrow-left"></div>
+                            <div style="float:left; margin-left:3px; margin-right: 2px; margin-top:2px">Maximum:</div>
+                            <div style="float: left; margin-right: 5px" ><input id="txb_settings_max_events" style="width:76px; font-size:12px" type="number" min="2" max="1000"></div>
+                            <div style="float: left; margin-top:2px">rows</div>
+                    </div>
+                </div>
+
+                <div style="width:100%; display: inline-block">
+                        <div style="float:left; margin-top: 5px;">
+                                <div style="font-size:12px; color:#484848;">
+                                    <div style="float:left">Monitor</div> 
+                                    <div style="float:left; margin-left: 3px;"><img src="../assets/help.png" width="16" title="Supervising tabs for all requests" /></div>
+                                </div>
+                                <div style="width:100%; display: inline-block; margin-left: 4px; margin-top: 2px; font-size: 12px">
+                                        <div style="float:left" class="ex-ui-menu-arrow-left"></div>
+                                        <div style="float:left; margin-left:3px; margin-right: 2px; padding-top:1px"><input id="chk_settings_monitor" type="checkbox" style="margin: 0" checked="checked" /></div>
+                                        <div style="float: left; color:#484848">Enable</div>
+                                </div>
+                        </div>
+    
+                        <div style="float:left; margin-top: 5px; margin-left: 10px">
+                                <div style="font-size:12px; color:#484848;">
+                                    <div style="float:left">Filters</div> 
+                                    <div style="float:left; margin-left: 3px;"><img src="../assets/help.png" width="16" title="Executing filters stack for outgoing requests" /></div>
+                                </div>
+                                <div style="width:100%; display: inline-block; margin-top: 2px;margin-left: 4px; font-size: 12px">
+                                        <div style="float:left" class="ex-ui-menu-arrow-left"></div>
+                                        <div style="float:left; margin-left:3px; margin-right: 2px; padding-top:1px"><input id="chk_settings_filters" type="checkbox" style="margin: 0" checked="checked" /></div>
+                                        <div style="float: left; color:#484848">Enable</div>
+                                </div>
+                        </div>
+                
+                </div>
+                    
+            
+                    <div style="display: inline-block; margin-top: 5px">
+                       <div style="font-size:12px; color:#484848;">
+                                <div style="float:left">Paranoid</div> 
+                                <div style="float:left; margin-left: 3px;"><img src="../assets/help.png" width="16" title="Experimental mode, define maximum external domains notification count&#013;more external domains mean more 3rd party websites knows about you" /></div>
+                            </div>
+                            <div style="width:100%; display: inline-block; margin-top: 2px;margin-left: 4px; font-size: 12px">
+                                    <div style="float:left" class="ex-ui-menu-arrow-left"></div>
+                                    <div style="float:left; margin-left:3px; margin-right: 2px; padding-top:1px"><input type="checkbox" style="margin: 0" id="chk_settings_paranoid" checked="checked" /></div>
+                                    <div style="float: left; color:#484848">Enable</div>
+                            </div>
+                        <div style="width:100%; display: inline-block; margin-top: 5px;font-size:12px">
+                            <div style="float:left; width: 60px; text-align: right; margin-right: 5px">Low:</div>
+                            <div style="float: left;"><input id="txb_settings_paranoid_low" style="width:50px; font-size:12px" type="number"></div>
+                        </div>
+                        <div style="width:100%; display: inline-block; margin-top: 5px;font-size:12px">
+                            <div style="float:left;  width: 60px; text-align: right; margin-right: 5px">Medium:</div>
+                            <div style="float: left;"><input id="txb_settings_paranoid_medium" style="width:50px; font-size:12px" type="number"></div>
+                        </div>
+                        <div style="width:100%; display: inline-block; margin-top: 5px;">
+                            <div style="float:left;  width: 60px; text-align: right; margin-right: 5px; font-size: 12px">High:</div>
+                            <div style="float: left; font-size:12px; color:#484848">All above medium</div>
+                        </div>
+                    </div>
+
+                    <div style="display: inline-block; margin-top: 5px">
+                            <div style="font-size:12px; color:#484848;">
+                                     <div style="float:left">Remote Analysis</div> 
+                                     <div style="float:left; margin-left: 3px;"><img src="../assets/help.png" width="16" title="Help us to improve the service by inspecting your browser activity&#013;The information is totaly anonymous without any tracking or tracing" /></div>
+                                 </div>
+                                 <div style="width:100%; display: inline-block; margin-top: 2px;margin-left: 4px; font-size: 12px">
+                                         <div style="float:left" class="ex-ui-menu-arrow-left"></div>
+                                         <div style="float:left; margin-left:3px; margin-right: 2px; padding-top:1px"><input type="checkbox"  id="chk_settings_remote" style="margin: 0" checked="checked" /></div>
+                                         <div style="float: left; color:#484848">Enable</div>
+                                 </div>
+                    </div>
+        </div>
+        <div id="btn_save_settings" class="ex-ui-menu-item">
+                <div class="ex-ui-menu-arrow"></div>
+                <div id="btn_save_settings_title" style="float:left">
+                        Save
+                </div> 
+        </div>
+    
+
+    </div>
+
+    <div id="panel_about" class="ex-ui-panel"style="display: none; padding-left:0px" menu="About">
+        <div style="text-align: center; margin-top:70px"><img src="../assets/logo-128.png" /></div>
+        <div style="width:100%; display: inline-block; text-align: center">
+            <span id="lbl_about_title" style="margin-right: 5px"></span><span id="lbl_about_version"></span>
+        </div>
+        <div style="display: inline-block; padding-left: 5px;">
+            <span style="color:#3b78e7">Site: </span><span>rudenetworks.com/traffico</span><br />
+            <span style="color:#3b78e7">Github: </span><span>github.com/proxytype/traffico</span><br />
+        </div>
+
+        
+    </div>
+
+    <div id="panel_packages"class="ex-ui-panel"style="display: none; padding-left:0px" menu="Packages">
+    </div>
+        
+</body>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js" id="script_graphloader"></script>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/views/dashboard.js"></script>
+<script type="text/javascript" src="../js/views/filters.js"></script>
+<script type="text/javascript" src="../js/foreground.js"></script>
+<script type="text/javascript" src="../js/settings.js"></script>
+<script type="text/javascript" src="../js/popup.js"></script>
+<script type="text/javascript" src="../js/navigator.js"></script>
+
+
+</html>
