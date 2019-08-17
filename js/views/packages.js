@@ -17,12 +17,20 @@ function loadPacakge() {
         var packages = JSON.parse(data.responseText);
         if(packages.isValid) {
             if(packages.payload != undefined && packages.payload.length != 0) {
-
+                for(var i = 0; i < packages.payload.length; i++) {
+                    createPackageRow(packages.payload[i]);
+                }
             }
         }
     })
 }
 
-function createPackageRow() {
-    
+function createPackageRow(package) {
+    var ele = "<div class='ex-log-row'>"
+                + "<div style='width:100%; display:inline-block; font-size:12px'>"
+                    + "<div title='" + package.title + "'>" + fixLength(package.title, EVENT_MAX_LENGTH, "...") +"</div>"
+                    + "<div title='" + package.description + "' style='font-size:10px; color:#484848'>" + package.description.toLowerCase() + "</div>"
+                + "</div>"
+            + "</div>";
+    $(wrappers.WRAPPER_PACKAGES_LIST).append(ele);
 }
