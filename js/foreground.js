@@ -66,9 +66,9 @@ function init() {
             $(labels.LBL_DASHBOARD_STATUS).html(monitor);
 
             chrome.runtime.sendMessage({ type: MESSAGE_GET_FILTERS }, function (response) {
+                delete filters;
                 filters = response;
-                console.log(response);
-                runListener();
+                loadTimer(true);
             });
 
             
@@ -80,24 +80,6 @@ function init() {
         console.log(result);
 
     })
-}
-
-function runListener() {
-
-    if (isRunning == false) {
-        isRunning = true;
-        loadTimer(true);
-        $(BTN_START).css('color', '#76ad00');
-    }
-}
-
-function stopListener() {
-    if (isRunning) {
-        isRunning = false;
-    }
-    $(BTN_START).css('color', '#6c6c6c');
-
-
 }
 
 function loadTimer(isFirstLoader) {
@@ -202,9 +184,6 @@ function callBackground(isFirstLoader) {
 
 }
 
-
-//#region Load Functions
-
 function loadInfo(e) {
 
     e.stopPropagation();
@@ -245,22 +224,6 @@ function loadInfo(e) {
 
     pager.swipePanels(panels.home, panels.information);
 
-}
-
-
-
-
-
-
-
-function loadPacakge() {
-
-    $(HAMBURGER).fadeOut(10);
-    $(BACK).attr('from',  panels.packages);
-    $(BACK).attr('to',  panels.filters);
-    $(BACK).fadeIn(10);
-
-    pager.swipePanels( panels.filters, panels.packages);
 }
 
 function loadSettings() {

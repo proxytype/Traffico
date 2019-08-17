@@ -1,5 +1,4 @@
-var REMOTE_URL = 'http://rudenetworks.com/traffico/payload.aspx';
-
+var REMOTE_URL = 'https://rudenetworks.com/traffico/payload.aspx';
 
 self.onmessage = function(request) {
     if(request.data.event == "remote") {
