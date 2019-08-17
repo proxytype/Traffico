@@ -24,9 +24,6 @@ var filters = {};
 
 $('#script_graphloader').ready(function () {
 
-    $(BTN_START).on('click', runListener);
-    $(BTN_STOP).on('click', stopListener);
-
     try
     {
         init();
@@ -68,6 +65,7 @@ function init() {
             chrome.runtime.sendMessage({ type: MESSAGE_GET_FILTERS }, function (response) {
                 delete filters;
                 filters = response;
+                isRunning = true;
                 loadTimer(true);
             });
 

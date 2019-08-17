@@ -377,7 +377,6 @@ function createFilterRegex() {
 
 function setEvent(event) {
     event.tick = event.date.getTime();
-    console.log(event);
     events.unshift(event);
 }
 

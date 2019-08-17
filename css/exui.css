@@ -295,6 +295,16 @@
     font-size:12px;
 }
 
+.ex-ui-wrapper-packages-list {
+    overflow: auto;
+    width:267px;
+    height: 348px; 
+    border: 1px solid #c3c3c3;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    font-size:12px;
+}
+
 .ex-ui-filter-add {
     text-align: center;
     text-decoration: none;

@@ -104,7 +104,8 @@ var buttons = {
  var wrappers = {
      WRAPPER_ALL_FILTERS: '#wrapper_all_filters',
      WRAPPER_FILTER_LIST: '#wrapper_filters_list',
-     WRAPPER_EVENTS_LIST: '#wrapper_events_list'
+     WRAPPER_EVENTS_LIST: '#wrapper_events_list',
+     WRAPPER_PACKAGES_LIST: '#wrapper_packages_list'
  }
 
  var labels = {
@@ -248,4 +249,60 @@ function checkNumaricLimits(id) {
     }
 
     return isValid;
+}
+
+function returnAreaChartOptions(title, color) {
+    var options = {
+        titleTextStyle: {
+            color: '#ffffff',
+            fontName: 'Open Sans',
+            fontSize: '18',
+        },
+        colors: [color],
+        width: '250px',
+        height: '90',
+        chartArea: {
+            left: 30,
+            right: 15,
+            top: 30,
+            right: 0,
+            bottom: 15,
+            width: '250px',
+            height: '90',
+        },
+        backgroundColor: '#f1f1f1',
+        title: "",
+        hAxis: {
+            title: '',
+            titleTextStyle: { color: '#132031' },
+            gridlines: {
+                color: 'transparent'
+            }
+        },
+        vAxis: {
+            viewWindowMode: 'explicit',
+            viewWindow: { min: 0 },
+            minValue: 0,
+            gridlines: {
+                color: '#808080'
+            },
+
+        },
+        legend: { position: "none" },
+    };
+
+    return options;
+}
+
+
+function ajax(url, callback) {
+    $.ajax({
+        url: url,
+        method: 'POST',
+        complete: function (data) {
+            if (callback != undefined) {
+                callback(data);
+            }
+        }
+    });
 }
