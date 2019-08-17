@@ -5,4 +5,5 @@ Privacy Firewall
 
 Everything you do over the internet is sign somewhere and help someone to gather information about your activities in many fields, is not about your bank account or stealing your passwords, is about brain storm you repeatedly about thing you don't really looks for.
 
-With help from traffico you can monitor you chrome activity and block black listed patterns to prevent communication with remote host, also you can control the cookie and the tabs window behaviors.
+Traffico can help you to monitor your chrome activity and block black listed patterns to prevent communication with remote host, 
+you can also control the cookies and tabs windows behaviors.
