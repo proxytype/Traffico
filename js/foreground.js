@@ -14,11 +14,11 @@ var isRunning = false;
 
 var pager = undefined;
 var chartRequests = undefined;
-var chartSites = undefined;
 var settings = undefined;
-var response = undefined;
+
 var popup = undefined;
 
+var response = undefined;
 var filters = {};
 
 
@@ -115,21 +115,24 @@ function callBackground(isFirstLoader) {
 
         response = _response
         var previous = 0;
-        if ($(labels.LBL_TOTAL_REQUESTS).html() != "...") {
-            previous = parseInt($(labels.LBL_TOTAL_REQUESTS).html());
+
+        $totalRequests = $(labels.LBL_TOTAL_REQUESTS);
+
+        if ($totalRequests.html() != "...") {
+            previous = parseInt($totalRequests.html());
             var avg = response.counters.requests - previous;
             $(labels.LBL_AVG_REQUESTS).html(avg);
         }
 
-        $(labels.LBL_TOTAL_REQUESTS).html(response.counters.requests);
+        $totalRequests.html(response.counters.requests);
 
         if (response.tabs != undefined && response.tabs.length != 0) {
 
-
+            $containersLog = $(CONTAINERS_LOGS);
             for (var key in response.tabs) {
 
                 if ($("#d_" +  response.tabs[key].id).length == 0) {
-                    $(CONTAINERS_LOGS).append(createLogTabRow(response.tabs[key]));
+                    $containersLog.append(createLogTabRow(response.tabs[key]));
 
                     $('#d_' + response.tabs[key].id).on('click', displayHistoryRows)
                 } else {
@@ -281,7 +284,7 @@ function loadChart(data, id, title) {
             if (chartRequests == undefined) {
                 chartRequests = new google.visualization.AreaChart(document.getElementById(id));
             } else {
-                //chartRequests.clearChart();
+                chartRequests.clearChart();
             }
 
             chartRequests.draw(data, options);

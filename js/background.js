@@ -221,12 +221,23 @@ function handleMessageSetSettings(handler, newSettings) {
 
 function handleMessageGetFilters(handler) {
     createFilterRegex();
-    handler({filters: filters});
+    var e = JSON.parse(localStorage.getItem(STORAGE_KEY_FILTERS));
+    if(e == 'null') {
+        e = {};
+    }
+    console.log(e)
+    // chrome.storage.local.get([STORAGE_KEY_FILTERS], function(result) {
+    //     handler({filters: JSON.parse(result.filters)});
+    // })
+
+    handler({filters: e});
+
 }
 
 function handleMessageSetFilters(handler, newfilters) {
     filters = newfilters;
-    chrome.storage.local.set({ [STORAGE_KEY_FILTERS]: JSON.stringify(filters) });
+    localStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(filters));
+    //chrome.storage.local.set({ [STORAGE_KEY_FILTERS]: JSON.stringify(filters) });
     createFilterRegex();
     handler({ status: "success" })
 }

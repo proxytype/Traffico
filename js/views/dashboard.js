@@ -48,6 +48,7 @@ function displayHistoryRows(e) {
         createHistoryRow(response.tabs[key].history, id, response.tabs[key].domain, response.tabs[key].id);
         $(id).css('display', 'inline-block');
     } else {
+        $(id).html('');
         $(id).css('display', 'none');
     }
 }
