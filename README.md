@@ -3,7 +3,6 @@ Privacy Firewall
 
 ![alt text](https://raw.githubusercontent.com/proxytype/Traffico/master/assets/logo-256.png)
 
-Everything you do over the internet is sign somewhere and help someone to gather information about your activities in many fields, is not about your bank account or stealing your passwords, is about brain storm you repeatedly about thing you don't really looks for.
+Your privacy almost pass from the world, everyone collecting the much information they can about you to use it for thier own needs or against you, what make you spend more money, or to expose to propagnda under recommendtion for you, today you are almost cannot search information freely without been expose to shadow systems that try to seduce.
 
-Traffico can help you to monitor your chrome activity and block black listed patterns to prevent communication with remote host, 
-you can also control the cookies and tabs windows behaviors.
+this is where traffico can help by monitoring behind the sence every website you enter, and with simple filters set you can protected your self for known companys how try to collect information about you.
