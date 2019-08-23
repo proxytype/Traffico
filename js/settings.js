@@ -5,7 +5,7 @@ var TrafficoSettings = function(){
     const DEFAULT_MIN_PARANOID_LEVEL_LOW = 10;
     const DEFAULT_MIN_PARANOID_LEVEL_MEDIUM = 20;
     const DEFAULT_MIN_PARANOID_LELVEL_HIGH = 30; 
-    const DEAFULT_MAX_REFERENCE_SITE_PER_TAB = 500;
+    const DEAFULT_MAX_REFERENCE_SITE_PER_TAB = 200;
     const DEFAULT_MAX_EVENTS_ROWS = 200;
 
     this.versionHash = undefined;

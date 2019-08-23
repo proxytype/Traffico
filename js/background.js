@@ -56,7 +56,8 @@ function init() {
                         });
             
                         //start remote logger
-                        remoteLogger();
+                        //remoteLogger();
+                        infintiyLoop();
                     });
                 });
 
@@ -69,7 +70,48 @@ function init() {
 
 }
 
+
+function infintiyLoop() {
+    setTimeout(() => {
+        if(settings.enableMonitor) {
+            counters.callbacks = counters.callbacks + 1;
+            counters.requests = counters.requests + tempRequests;
+    
+            graph.push([counters.callbacks, tempRequests])
+    
+            tempRequests = 0;
+    
+    
+            if (stack.length != 0) {
+                for (var i = 0; i < stack.length; i++) {
+                    processList(stack[i]);
+                }
+    
+                stack = [];
+            }
+    
+            chrome.runtime.sendMessage({ type: MESSAGE_GET_REQUESTS, data:  { tabs: tabs, counters: counters, graph: graph, events: events }});
+            
+            if (graph.length > settings.graphRequestRowsCount) {
+                graph.shift();
+            }
+    
+            if(events.length > settings.maximumEventsRows) {
+                events.length = settings.maximumEventsRows;
+            }
+    
+        }
+
+        infintiyLoop();
+    
+    }, settings.refreshRate);
+
+}
+
 function remoteLogger() {
+
+    
+
     setTimeout(() => {
         if (settings.enableRemote) {
             worker.postMessage({ event: "remote", payload: tabs });
@@ -82,11 +124,8 @@ function remoteLogger() {
 
 chrome.runtime.onMessage.addListener(function (message, sender, handler) {
     
-    if (message.type == MESSAGE_GET_REQUESTS) {
-        handleMessageRequest(handler);
-    }
 
-    else if (message.type == MESSAGE_GET_SETTINGS) {
+     if (message.type == MESSAGE_GET_SETTINGS) {
         handleMessageGetSettings(handler);
     }
 
@@ -210,34 +249,36 @@ function handleMessageSetEvents(hander, newEvents) {
 }
 
 function handleMessageGetSettings(handler) {
-    handler({ settings: settings });
+
+    var e = JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS));
+    if(e == 'null') {
+        e = {};
+    }
+
+    handler({ settings: e });
 }
 
 function handleMessageSetSettings(handler, newSettings) {
     settings = newSettings;
-    chrome.storage.local.set({ [STORAGE_KEY_SETTINGS]: JSON.stringify(settings) });
+    localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
     handler({ status: "success" });
 }
 
 function handleMessageGetFilters(handler) {
+
     createFilterRegex();
     var e = JSON.parse(localStorage.getItem(STORAGE_KEY_FILTERS));
     if(e == 'null') {
         e = {};
     }
+
     console.log(e)
-    // chrome.storage.local.get([STORAGE_KEY_FILTERS], function(result) {
-    //     handler({filters: JSON.parse(result.filters)});
-    // })
-
     handler({filters: e});
-
 }
 
 function handleMessageSetFilters(handler, newfilters) {
     filters = newfilters;
     localStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(filters));
-    //chrome.storage.local.set({ [STORAGE_KEY_FILTERS]: JSON.stringify(filters) });
     createFilterRegex();
     handler({ status: "success" })
 }
@@ -245,31 +286,6 @@ function handleMessageSetFilters(handler, newfilters) {
 
 function handleMessageRequest(handler) {
 
-    counters.callbacks = counters.callbacks + 1;
-    counters.requests = counters.requests + tempRequests;
-
-    graph.push([counters.callbacks, tempRequests])
-
-    tempRequests = 0;
-
-
-    if (stack.length != 0) {
-        for (var i = 0; i < stack.length; i++) {
-            processList(stack[i]);
-        }
-
-        stack = [];
-    }
-
-    handler({ tabs: tabs, counters: counters, graph: graph, events: events });
-
-    if (graph.length > settings.graphRequestRowsCount) {
-        graph.shift();
-    }
-
-    if(events.length > settings.maximumEventsRows) {
-        events.length = settings.maximumEventsRows;
-    }
     
 
 }
@@ -298,18 +314,15 @@ function processFilterRquest(url, type) {
 
     if(filter != undefined && filter.enable) {
         var event = {event: 'webrequest', pattern: filter.pattern, date: new Date(), url: url, status: "pass"};
-        
+
         if(filter.blockAll) {
             isCancel.cancel = true;
             event.status = "block";
         } else {
-            for(var i = 0; i < filter.filters.length; i++) {
-                
-                if (filter.filters[i] == type) {
-                    isCancel.cancel = true;
-                    event.status = "block";
-                    break;
-                }
+
+            if(filter.filters[type] != undefined) {
+                isCancel.cancel = true;
+                event.status = "block";
             }
         }
 
@@ -358,20 +371,15 @@ function processList(details) {
                 tabs[[details.tabId]].counters.sameDomains = tabs[[details.tabId]].counters.sameDomains + 1;
             }
 
-            tabs[[details.tabId]].history[[hash]] = { urls: { [[urlHash]]: { url: details.url, type: details.type, hits: 1 } }, domain: domain, hash: hash, counters: { requests: 0 } };
+            tabs[[details.tabId]].history[[hash]] = { domain: domain, hash: hash, counters: { requests: 0 }, types: {[details.type]: 1}};
 
         } else {
-
-            if (tabs[[details.tabId]].history[[hash]].urls[[urlHash]] == undefined) {
-                tabs[[details.tabId]].history[[hash]].urls[[urlHash]] = { url: details.url, type: details.type, hits: 1 };
+            if(tabs[[details.tabId]].history[[hash]].types[details.type] == undefined) {
+                tabs[[details.tabId]].history[[hash]].types[details.type] = {[details.type]: 1};
+            } else {
+                tabs[[details.tabId]].history[[hash]].types[details.type] = tabs[[details.tabId]].history[[hash]].types[details.type] + 1;
             }
-            else {
-                tabs[[details.tabId]].history[[hash]].urls[[urlHash]].hits = tabs[[details.tabId]].history[[hash]].urls[[urlHash]].hits + 1;
-            }
-
         }
-
-
 
         tabs[[details.tabId]].history[[hash]].counters.requests = tabs[details.tabId].history[[hash]].counters.requests + 1;
         tabs[[details.tabId]].counters.requests = tabs[[details.tabId]].counters.requests + 1;

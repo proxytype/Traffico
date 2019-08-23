@@ -63,7 +63,6 @@ var panels = {
 
 var buttons = {
     BTN_SAVE_SETTINGS: '#btn_save_settings',
-    BTN_CREATE_FILTER: '#btn_create_filter',
     BTN_FILTER_ADD: '#btn_filter_add',
     BTN_SAVE_SETTINGS_TITLE: '#btn_save_settings_title',
     BTN_LOG_DOWNLOAD: "#btn_log_download",

@@ -8,7 +8,7 @@
       "*://*/*",
       "webRequest",
       "webRequestBlocking",
-      "storage",
+      "unlimitedStorage",
       "cookies",
       "tabs"
     ],
@@ -26,7 +26,16 @@
     "content_scripts": [
       {
         "css": [ "css/exui.css" ],
-        "js": [ "js/jquery.js", "js/common.js", "js/views/filters.js", "js/views/dashboard.js","js/views/packages.js", "js/foreground.js" ,"js/popup.js", "js/dictonary.js", "js/navigator.js", "js/settings.js"],
+        "js": [ "js/jquery.js",
+          "js/common.js",
+          "js/views/filters.js",
+          "js/views/dashboard.js",
+          "js/views/packages.js",
+          "js/foreground.js",
+          "js/popup.js",
+          "js/navigator.js",
+          "js/settings.js"
+        ],
         "matches": [ "http://*/*", "https://*/*" ]
       }
     ],

@@ -20,7 +20,7 @@ var popup = undefined;
 
 var response = undefined;
 var filters = {};
-
+var isloaded = false;
 
 $('#script_graphloader').ready(function () {
 
@@ -34,6 +34,82 @@ $('#script_graphloader').ready(function () {
 
 });
 
+chrome.runtime.onMessage.addListener(function(message, sender, handler) {
+
+    if(!isloaded) {
+        return;
+    }
+
+    if(message.type == MESSAGE_GET_REQUESTS) {
+
+        if(message.data != undefined) {
+            delete response;
+
+            response = message.data;
+            var previous = 0;
+
+            $totalRequests = $(labels.LBL_TOTAL_REQUESTS);
+
+            if ($totalRequests.html() != "...") {
+                previous = parseInt($totalRequests.html());
+                var avg = response.counters.requests - previous;
+                $(labels.LBL_AVG_REQUESTS).html(avg);
+            }
+
+            $totalRequests.html(response.counters.requests);
+
+            if (response.tabs != undefined && response.tabs.length != 0) {
+
+                $containersLog = $(CONTAINERS_LOGS);
+
+                for (var key in response.tabs) {
+
+                    if ($("#d_" +  response.tabs[key].id).length == 0) {
+                        $containersLog.append(createLogTabRow(response.tabs[key]));
+
+                        $("#d_" +  response.tabs[key].id).on('click', displayHistoryRows)
+                    } else {
+                        $a = $('#a_' + response.tabs[key].id);
+                        if ($a.html() != response.tabs[key].domain) {
+                            $a.html(response.tabs[key].domain);
+                        }
+                    }
+
+                    var src = "../assets/point.png";
+                    var title = "";
+
+                    if (settings.enableParanoid) {
+
+                        if (response.tabs[key].counters.externalDomains < settings.paranoid.low) {
+                            src = paranoidResources.low.img;
+                            title = paranoidResources.low.title;
+                        } else if (response.tabs[key].counters.externalDomains < settings.paranoid.medium) {
+                            title = paranoidResources.medium.title;
+                            src = paranoidResources.medium.img;
+                        } else {
+                            title = paranoidResources.high.title;
+                            src = paranoidResources.high.img;
+                        }
+                    }
+
+
+                    $('#i_' + response.tabs[key].id).attr('src', src).attr('title', title);
+                    $('#s_' + response.tabs[key].id).html(response.tabs[key].counters.requests);
+                }
+
+            }
+
+            response.graph.unshift(["Pulse", "Requests"]);
+            loadChart(google.visualization.arrayToDataTable(response.graph), CHART_REQUESTS, "Requests", chartRequests);
+
+            if(response.events.length != 0) {
+                events = response.events;
+                displayEventsLogRows();
+            }
+        }
+    }    
+})
+
 function init() {
     google.charts.load('visualization', '1.0', { packages: ['corechart'] });
 
@@ -41,7 +117,6 @@ function init() {
         console.log(e);
 
         $(buttons.BTN_SAVE_SETTINGS).on('click', saveSettings);
-        $(buttons.BTN_CREATE_FILTER).on('click', loadFilter);
         $(buttons.BTN_FILTER_ADD).on('click', saveFilter);
         $(buttons.BTN_LOG_DELETE).on('click', deleteLog);
         $(buttons.BTN_LOG_DOWNLOAD).on('click', saveLog)
@@ -66,166 +141,19 @@ function init() {
                 delete filters;
                 filters = response;
                 isRunning = true;
-                loadTimer(true);
+                pager = new Navigator();
+                popup = new PopupHandler();
+                pager.swipePanels(panels.loader, panels.home);
+
+                isloaded = true;
             });
 
             
         });
     });
 
-    chrome.cookies.getAll({}, function callback(result) {
-
-        console.log(result);
-
-    })
 }
 
-function loadTimer(isFirstLoader) {
-
-
-    setTimeout(() => {
-
-        if (!logSynch && isRunning) {
-
-            logSynch = true;
-
-            try {
-                callBackground(isFirstLoader);
-            }
-            catch {
-                logSynch = true;
-                console.error("Unable Call Background!");
-            }
-
-
-        }
-
-        loadTimer(false);
-
-    }, settings.refreshRate);
-
-}
-
-
-function callBackground(isFirstLoader) {
-
-    chrome.runtime.sendMessage({ type: MESSAGE_GET_REQUESTS }, function (_response) {
-        
-        delete response;
-
-        response = _response
-        var previous = 0;
-
-        $totalRequests = $(labels.LBL_TOTAL_REQUESTS);
-
-        if ($totalRequests.html() != "...") {
-            previous = parseInt($totalRequests.html());
-            var avg = response.counters.requests - previous;
-            $(labels.LBL_AVG_REQUESTS).html(avg);
-        }
-
-        $totalRequests.html(response.counters.requests);
-
-        if (response.tabs != undefined && response.tabs.length != 0) {
-
-            $containersLog = $(CONTAINERS_LOGS);
-            for (var key in response.tabs) {
-
-                if ($("#d_" +  response.tabs[key].id).length == 0) {
-                    $containersLog.append(createLogTabRow(response.tabs[key]));
-
-                    $('#d_' + response.tabs[key].id).on('click', displayHistoryRows)
-                } else {
-                    if ($('#a_' + response.tabs[key].id).html() != response.tabs[key].domain) {
-                        $('#a_' + response.tabs[key].id).html(response.tabs[key].domain);
-                    }
-                }
-
-                var src = "../assets/point.png";
-                var title = "";
-
-                if (settings.enableParanoid) {
-
-                    if (response.tabs[key].counters.externalDomains < settings.paranoid.low) {
-                        src = paranoidResources.low.img;
-                        title = paranoidResources.low.title;
-                    } else if (response.tabs[key].counters.externalDomains < settings.paranoid.medium) {
-                        title = paranoidResources.medium.title;
-                        src = paranoidResources.medium.img;
-                    } else {
-                        title = paranoidResources.high.title;
-                        src = paranoidResources.high.img;
-                    }
-                }
-
-
-                $('#i_' + response.tabs[key].id).attr('src', src).attr('title', title);
-                $('#s_' + response.tabs[key].id).html(response.tabs[key].counters.requests);
-            }
-
-        }
-
-        response.graph.unshift(["Pulse", "Requests"]);
-        loadChart(google.visualization.arrayToDataTable(response.graph), CHART_REQUESTS, "Requests", chartRequests);
-
-        if(response.events.length != 0) {
-            events = response.events;
-            displayEventsLogRows();
-        }
-
-
-        if (isFirstLoader) {
-            pager = new Navigator();
-            popup = new PopupHandler();
-            pager.swipePanels(panels.loader, panels.home);
-        }
-
-        logSynch = false;
-    });
-
-}
-
-function loadInfo(e) {
-
-    e.stopPropagation();
-
-    var domain = e.currentTarget.attributes.domain.value;
-    var initiator = e.currentTarget.attributes.initiator.value;
-    var tabID = e.currentTarget.attributes.tab.value;
-    var el = response.tabs[e.currentTarget.attributes.tab.value].history[initiator]
-
-    $(labels.LBL_INFO_DOMAIN).html(fixLength(e.currentTarget.parentElement.attributes.domain.value, URL_MAX_LENGTH, "...")).attr('title', e.currentTarget.parentElement.attributes.domain.value);
-
-    $(labels.LBL_INFO_REFERENCE).html(fixLength(domain, REFERENCE_MAX_LENGTH, "...")).attr('title', domain);
-    $(labels.LBL_INFO_REFERENCE).attr('domain', domain);
-
-    $('.ex-ui-info-flag').html("0");
-    $('#info_urls').html('');
-    if (el.urls != undefined) {
-        for (var key in el.urls) {
-            var splitter = el.urls[key].url.split('/');
-            $('#info_urls').append("<div title='" + el.urls[key].url + "' class='ex-log-row' style='font-size:12px;min-height:16px'>"
-                + "<div style='float:left;' id='n_" + key + "'><img src='../assets/clipboard.png' width='16' /></div>"
-                + "<div style='float:left; padding-left:5px'>" + fixLength(splitter[splitter.length - 1], URL_MAX_LENGTH, "...").toLowerCase() + "</div>"
-                + "<div class='ex-ui-log-row-requests' style='min-height:17px'>" + el.urls[key].hits + "</div>"
-                + "</div>");
-
-            $('#n_' + key).on('click', loadNewTab);
-        }
-
-
-    }
-
-    $(labels.LBL_INFO_TOTAL_REQUESTS).html(el.counters.requests);
-   
-    $(HAMBURGER).fadeOut(10);
-    $(BACK).attr('from',  panels.information);
-    $(BACK).attr('to',  panels.home);
-    $(BACK).fadeIn(10);
-
-    pager.swipePanels(panels.home, panels.information);
-
-}
 
 function loadSettings() {
 
