@@ -1,5 +1,7 @@
 # Traffico
-Privacy Firewall
+## Privacy Firewall
+Chrome Extenstion, 
+Alpha Version: 1.2
 
 ![alt text](https://raw.githubusercontent.com/proxytype/Traffico/master/assets/logo-256.png)
 
