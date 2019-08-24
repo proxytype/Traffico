@@ -34,10 +34,56 @@ $('#script_graphloader').ready(function () {
 
 });
 
-chrome.runtime.onMessage.addListener(function(message, sender, handler) {
 
+
+function init() {
+    google.charts.load('visualization', '1.0', { packages: ['corechart'] });
+
+    google.charts.setOnLoadCallback(function (e) {
+        console.log(e);
+
+        $(buttons.BTN_SAVE_SETTINGS).on('click', saveSettings);
+        $(buttons.BTN_FILTER_ADD).on('click', saveFilter);
+        $(buttons.BTN_LOG_DELETE).on('click', deleteLog);
+        $(buttons.BTN_LOG_DOWNLOAD).on('click', saveLog)
+        $(buttons.BTN_FILTERS_LOG).on('click', loadFilterLog);
+        $(buttons.BTN_PACKAGE_DOWNLOAD).on('click', loadPacakge);
+        $(buttons.BTN_EVENTS_DELETE).on('click', deleteEvents);
+
+        $(checkboxes.CHK_FILRER_BLOCK_ALL).on('change', blockAllChange);
+
+        chrome.runtime.sendMessage({ type: MESSAGE_GET_SETTINGS }, function (response) {
+            
+            settings = response.settings;
+
+            var monitor = monitorStatus.OFFLINE;
+            if(settings.enableMonitor == true) {
+                monitor = monitorStatus.ONLINE;
+            }
+
+            $(labels.LBL_DASHBOARD_STATUS).html(monitor);
+
+            chrome.runtime.sendMessage({ type: MESSAGE_GET_FILTERS }, function (response) {
+                delete filters;
+                filters = response;
+                isRunning = true;
+                pager = new Navigator();
+                popup = new PopupHandler();
+                
+                chrome.runtime.onMessage.addListener(backgroundFeedback);
+            });
+
+            
+        });
+    });
+
+}
+
+
+function backgroundFeedback(message, sender, handler) {
     if(!isloaded) {
-        return;
+        isloaded = true;
+        pager.swipePanels(panels.loader, panels.home);
     }
 
     if(message.type == MESSAGE_GET_REQUESTS) {
@@ -108,51 +154,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, handler) {
             }
         }
     }    
-})
-
-function init() {
-    google.charts.load('visualization', '1.0', { packages: ['corechart'] });
-
-    google.charts.setOnLoadCallback(function (e) {
-        console.log(e);
-
-        $(buttons.BTN_SAVE_SETTINGS).on('click', saveSettings);
-        $(buttons.BTN_FILTER_ADD).on('click', saveFilter);
-        $(buttons.BTN_LOG_DELETE).on('click', deleteLog);
-        $(buttons.BTN_LOG_DOWNLOAD).on('click', saveLog)
-        $(buttons.BTN_FILTERS_LOG).on('click', loadFilterLog);
-        $(buttons.BTN_PACKAGE_DOWNLOAD).on('click', loadPacakge);
-        $(buttons.BTN_EVENTS_DELETE).on('click', deleteEvents);
-
-        $(checkboxes.CHK_FILRER_BLOCK_ALL).on('change', blockAllChange);
-
-        chrome.runtime.sendMessage({ type: MESSAGE_GET_SETTINGS }, function (response) {
-            
-            settings = response.settings;
-
-            var monitor = monitorStatus.OFFLINE;
-            if(settings.enableMonitor == true) {
-                monitor = monitorStatus.ONLINE;
-            }
-
-            $(labels.LBL_DASHBOARD_STATUS).html(monitor);
-
-            chrome.runtime.sendMessage({ type: MESSAGE_GET_FILTERS }, function (response) {
-                delete filters;
-                filters = response;
-                isRunning = true;
-                pager = new Navigator();
-                popup = new PopupHandler();
-                pager.swipePanels(panels.loader, panels.home);
-
-                isloaded = true;
-            });
-
-            
-        });
-    });
-
 }
+
 
 
 function loadSettings() {
