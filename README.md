@@ -7,4 +7,4 @@ Your privacy almost pass from the world, everyone collecting much information th
 
 Your information worth money and is not about your email or passwords, is about your behavior, telling you the right things you want to hear in the right place to maximize profits or showing a fake view for changing your mind in specific issues.
 
-This is where traffico can help by monitoring behind the scene for every website you enter, and with simple filters set you can protected your self for known companies who try to collect information about you.
+This is where traffico can help by monitoring behind the scene for every website you enter and with simple filters set you can protected your self for known companies who try to collect information about you.
