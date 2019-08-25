@@ -5,7 +5,7 @@ Alpha Version: 1.2
 
 ![alt text](https://raw.githubusercontent.com/proxytype/Traffico/master/assets/logo-256.png)
 
-Your privacy almost pass from the world, everyone collecting much information as they can about you, to use it for thier own needs or against you, that make you spend more money or expose you to propaganda and brainwash, today you are almost cannot search information without been expose to companies that help to other companies to seduce you for increase their profits using sophisticated marketing maniuplations.
+Your privacy almost pass from the world, everyone collecting much information as they can about you, to use it for thier own needs or against you, that make you spend more money or expose you to propaganda and brainwash, today you are almost cannot consume information without been expose to companies that help to other companies to seduce you for increase their profits using sophisticated marketing maniuplations.
 
 Your information worth money and it's not about your email or passwords, it's about your behavior, telling you the right thing in the right place to maximize profits or showing a fake view for changing your mind in specific issues.
 
