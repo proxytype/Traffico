@@ -1,7 +1,7 @@
 var JTAG = '#';
-var REMOTE_DELAY_MS = "300000";
 var HAMBURGER = "#hamburger";
 var BACK = "#back"
+var CALLBACK_TO_REMOTE = 50;
 
 var DOMAIN_UNKONWN = "unkonwn";
 

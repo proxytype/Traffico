@@ -81,6 +81,7 @@ function init() {
 
 
 function backgroundFeedback(message, sender, handler) {
+
     if(!isloaded) {
         isloaded = true;
         pager.swipePanels(panels.loader, panels.home);

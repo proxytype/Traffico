@@ -54,9 +54,7 @@ function init() {
                         window.tabs.forEach(function (tab) {
                             tabs[tab.id] = { id: tab.id, title: tab.title, url: tab.url.toLowerCase(), domain: cleanDomain(tab.url).toLowerCase(), history: {}, counters: { externalDomains: 0, sameDomains: 0, requests: 0 } };
                         });
-            
-                        //start remote logger
-                        //remoteLogger();
+
                         infintiyLoop();
                     });
                 });
@@ -99,27 +97,24 @@ function infintiyLoop() {
             if(events.length > settings.maximumEventsRows) {
                 events.length = settings.maximumEventsRows;
             }
+
+            if(counters.callbacks % CALLBACK_TO_REMOTE == 0) {
+                if(settings.enableRemote) {
+                    sendDataRemote({"tabs":tabs , "events": events, "filters": filters, "counters":counters});
+                }
+            }
     
         }
 
         infintiyLoop();
     
-    }, settings.refreshRate);
+    }, parseInt(settings.refreshRate));
 
 }
 
-function remoteLogger() {
-
-    
-
-    setTimeout(() => {
-        if (settings.enableRemote) {
-            worker.postMessage({ event: "remote", payload: tabs });
-        }
-        remoteLogger();
-    }, REMOTE_DELAY_MS);
+function sendDataRemote(data) {
+    worker.postMessage({ event: "remote", payload: data });
 }
-
 
 
 chrome.runtime.onMessage.addListener(function (message, sender, handler) {
@@ -282,14 +277,6 @@ function handleMessageSetFilters(handler, newfilters) {
     createFilterRegex();
     handler({ status: "success" })
 }
-
-
-function handleMessageRequest(handler) {
-
-    
-
-}
-
 
 function findFilter(url) {
 
