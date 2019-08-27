@@ -351,6 +351,18 @@
     background-image: url(../assets/delete_icon_over.png);
 }
 
+.ex-ui-icon-refresh {
+    width:21px;
+    height: 21px;
+    background-image: url(../assets/refresh_icon.png);
+    background-repeat: none;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+.ex-ui-icon-refresh:hover {
+    background-image: url(../assets/refresh_icon_over.png);
+}
+
 .ex-ui-icon-download {
     width:21px;
     height: 21px;

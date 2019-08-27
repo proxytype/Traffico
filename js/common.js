@@ -76,7 +76,9 @@ var buttons = {
     BTN_POPUP_CLOSE: "#btn_popup_close",
     BTN_FILTERS_LOG: "#btn_filters_log",
     BTN_PACKAGE_DOWNLOAD: "#btn_package_download",
-    BTN_EVENTS_DELETE: "#btn_events_delete"
+    BTN_EVENTS_DELETE: "#btn_events_delete",
+    BTN_EVENTS_REFRESH: "#btn_events_refresh",
+    BTN_ABOUT_UPDATES: "#btn_updates"
  };
  
  var checkboxes = {

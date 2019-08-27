@@ -246,6 +246,9 @@
             <div style="float: right; margin-top:0px">
                 <div id="btn_events_download" class="ex-ui-icon-download" title="Download events log"></div>
             </div>
+            <div style="float: right; margin-top:0px">
+                <div id="btn_events_refresh" class="ex-ui-icon-refresh" title="Refresh Log"></div>
+            </div>
         </div>
         <div class="ex-ui-wrapper-event-list" id="wrapper_events_list">
 
@@ -378,15 +381,20 @@
     </div>
 
     <div id="panel_about" class="ex-ui-panel" style="display: none; padding-left:0px" menu="About">
-        <div style="text-align: center; margin-top:70px"><img src="../assets/logo-128.png" /></div>
+        <div style="text-align: center; margin-top:55px"><img src="../assets/logo-128.png" /></div>
         <div style="width:100%; display: inline-block; text-align: center">
             <span id="lbl_about_title" style="margin-right: 5px"></span><span id="lbl_about_version"></span>
         </div>
-        <div style="display: inline-block; padding-left: 5px;">
+        <div style="width: 100%; text-align: center; margin-top:4px">
+            <input type="button" class="ex-ui-filter-add" style="width: 148px" id="btn_updates"
+                value="Check For Updates" />
+        </div>
+        <div style="display: inline-block; padding-left: 5px; margin-top: 4px">
             <span style="color:#3b78e7">Site: </span><span>rudenetworks.com/traffico</span><br />
             <span style="color:#3b78e7">Github: </span><span>github.com/proxytype/traffico</span><br />
         </div>
 
+        
 
     </div>
 
