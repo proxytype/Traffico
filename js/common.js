@@ -37,6 +37,13 @@ var filterStatus = {
     DISABLED: "Disabled"
 }
 
+var INJECTOR_SCRIPT =
+         'window.onload = function() {'
+        + ' var doc = document.getElementsById("sub-frame-error");'
+        + 'if(doc != null) {'
+            + 'console.log(doc);'
+        + '}};';
+
 var errors = {
     0: 'insert numbers only',
     1: "Value is lower than minimum",

@@ -27,7 +27,8 @@ function createHistoryRow(history, container, tabDomain, tabID) {
 
             $(container).append(his);
 
-            $('#h_' + key).on('click', loadInfo);
+            //TODO: directly to filters
+            //$('#h_' + key).on('click', loadInfo);
 
         }
 

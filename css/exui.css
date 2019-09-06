@@ -288,7 +288,7 @@
 .ex-ui-wrapper-event-list {
     overflow: auto;
     width:267px;
-    height: 348px; 
+    height: 346px; 
     border: 1px solid #c3c3c3;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;

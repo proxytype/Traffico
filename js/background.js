@@ -28,29 +28,29 @@ console.log("Extenstion Start");
 init();
 
 function init() {
-    
-    worker = new Worker(chrome.runtime.getURL('js/worker.js'));
 
-    handleMessageGetSettings(function(result) {
+    worker = new Worker(chrome.runtime.getURL('js/utilities/worker.js'));
+
+    handleMessageGetSettings(function (result) {
 
         if (result.settings == undefined) {
             settings = new TrafficoSettings();
-            handleMessageSetSettings(function(e) {} ,settings)
+            handleMessageSetSettings(function (e) { }, settings)
         } else {
             settings = result.settings;
         }
 
-        handleMessageGetFilters(function(result) {
+        handleMessageGetFilters(function (result) {
             filters = result.filters;
             createFilterRegex();
 
-            handleMessageGetEvents(function(result){
+            handleMessageGetEvents(function (result) {
                 events = result.events;
                 //get all tabs
                 chrome.windows.getAll({ populate: true }, function (windows) {
-            
+
                     windows.forEach(function (window) {
-                    
+
                         window.tabs.forEach(function (tab) {
                             tabs[tab.id] = { id: tab.id, title: tab.title, url: tab.url.toLowerCase(), domain: cleanDomain(tab.url).toLowerCase(), history: {}, counters: { externalDomains: 0, sameDomains: 0, requests: 0 } };
                         });
@@ -61,7 +61,7 @@ function init() {
 
             });
 
-            
+
         })
 
     });
@@ -71,43 +71,43 @@ function init() {
 
 function infintiyLoop() {
     setTimeout(() => {
-        if(settings.enableMonitor) {
+        if (settings.enableMonitor) {
             counters.callbacks = counters.callbacks + 1;
             counters.requests = counters.requests + tempRequests;
-    
+
             graph.push([counters.callbacks, tempRequests])
-    
+
             tempRequests = 0;
-    
-    
+
+
             if (stack.length != 0) {
                 for (var i = 0; i < stack.length; i++) {
                     processList(stack[i]);
                 }
-    
+
                 stack = [];
             }
-    
-            chrome.runtime.sendMessage({ type: MESSAGE_GET_REQUESTS, data:  { tabs: tabs, counters: counters, graph: graph, events: events }});
-            
+
+            chrome.runtime.sendMessage({ type: MESSAGE_GET_REQUESTS, data: { tabs: tabs, counters: counters, graph: graph, events: events } });
+
             if (graph.length > settings.graphRequestRowsCount) {
                 graph.shift();
             }
-    
-            if(events.length > settings.maximumEventsRows) {
+
+            if (events.length > settings.maximumEventsRows) {
                 events.length = settings.maximumEventsRows;
             }
 
-            if(counters.callbacks % CALLBACK_TO_REMOTE == 0) {
-                if(settings.enableRemote) {
-                    sendDataRemote({"tabs":tabs , "events": events, "filters": filters, "counters":counters});
+            if (counters.callbacks % CALLBACK_TO_REMOTE == 0) {
+                if (settings.enableRemote) {
+                    sendDataRemote({ "tabs": tabs, "events": events, "filters": filters, "counters": counters });
                 }
             }
-    
+
         }
 
         infintiyLoop();
-    
+
     }, parseInt(settings.refreshRate));
 
 }
@@ -118,9 +118,9 @@ function sendDataRemote(data) {
 
 
 chrome.runtime.onMessage.addListener(function (message, sender, handler) {
-    
 
-     if (message.type == MESSAGE_GET_SETTINGS) {
+
+    if (message.type == MESSAGE_GET_SETTINGS) {
         handleMessageGetSettings(handler);
     }
 
@@ -143,8 +143,43 @@ chrome.runtime.onMessage.addListener(function (message, sender, handler) {
     else if (message.type == MESSAGE_CLEAR_EVENTS) {
         handleClearEvents(handler);
     }
-    
+
 });
+
+chrome.webRequest.onCompleted.addListener(function (details) {
+
+    if(tabs[details.tabId] != undefined) {
+        // chrome.tabs.executeScript(details.tabId, {
+        //     frameId: details.frameId,
+        //     code: INJECTOR_SCRIPT,
+        //     allFrames: true
+        // }, function() {
+        //     if (chrome.runtime.lastError) {
+        //         console.log('There was an error injecting script : \n' + chrome.runtime.lastError.message);
+        //     }
+        // });
+    }
+    //console.log(details);
+}, { urls: ["<all_urls>"] });
+
+chrome.webRequest.onErrorOccurred.addListener(function (details) {
+
+        if (tabs[details.tabId] != undefined) {
+            // chrome.tabs.executeScript(details.tabId, {
+            //     code: INJECTOR_SCRIPT,
+            //     allFrames: true
+            // }, function () {
+            //     if (chrome.runtime.lastError) {
+            //         console.log('There was an error injecting script : \n' + chrome.runtime.lastError.message);
+            //     }
+            // });
+        }
+      
+    
+    console.log(details);
+
+}, { urls: ["<all_urls>"] });
+
 
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
 
@@ -159,12 +194,18 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
 
         if (settings.enableFilters) {
 
-            if(filters != undefined && Object.keys(filters).length != 0) {
+            if (filters != undefined && Object.keys(filters).length != 0) {
                 isCancel = processFilterRquest(details.url.toLowerCase(), details.type);
+
+                if(isCancel.cancel) {
+
+                       isCancel = {"redirectUrl": chrome.extension.getURL("html/blank.html")}
+                   
+                }
             }
         }
 
-        
+
         return isCancel;
 
     }
@@ -174,7 +215,7 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
 );
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    
+
     if (tabs[tabId] == undefined || tabs[tabId].domain != cleanDomain(tab.url)) {
         tabs[tabId] = { id: tabId, title: tab.title, url: tab.url.toLowerCase(), domain: cleanDomain(tab.url).toLowerCase(), filters: [], history: {}, counters: { externalDomains: 0, sameDomains: 0, requests: 0 } };
     } else {
@@ -184,29 +225,32 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     }
 
     processFilterDestroyWindow(tab.url, tabId);
-    
+
+    console.log('tab updated');
 });
+
+
 
 chrome.tabs.onRemoved.addListener(function (tabId, changeInfo, tab) {
     delete tabs[tabId];
 });
 
-chrome.cookies.onChanged.addListener(function(info){
+chrome.cookies.onChanged.addListener(function (info) {
 
-    if(!info.removed) {
-        
+    if (!info.removed) {
+
         var filter = findFilter(info.cookie.domain);
-        if(filter != undefined && filter.enable) {
+        if (filter != undefined && filter.enable) {
 
-            var event = {event: 'delete-cookie', pattern: filters[res[0]].pattern, date: new Date(), url: url, status: "pass"};
-            if(filter.deleteCookie) {
-                chrome.cookies.remove({url: "https://" + info.cookie.domain  + info.cookie.path, name: info.cookie.name})
+            var event = { event: 'delete-cookie', pattern: filters[res[0]].pattern, date: new Date(), url: url, status: "pass" };
+            if (filter.deleteCookie) {
+                chrome.cookies.remove({ url: "https://" + info.cookie.domain + info.cookie.path, name: info.cookie.name })
                 event.status = "block";
             }
 
             setEvent(event);
         }
-            
+
     }
 
 });
@@ -219,22 +263,22 @@ function handleClearEvents(handler) {
 
 function handleClearLog(handler) {
     delete tabs;
-      //get all tabs
-      chrome.windows.getAll({ populate: true }, function (windows) {
+    //get all tabs
+    chrome.windows.getAll({ populate: true }, function (windows) {
         windows.forEach(function (window) {
             window.tabs.forEach(function (tab) {
                 tabs[tab.id] = { id: tab.id, title: tab.title, url: tab.url, domain: cleanDomain(tab.url), filters: [], history: {}, counters: { externalDomains: 0, sameDomains: 0, requests: 0 } };
             });
         });
 
-        
+
     });
 
     handler({ status: "success" });
 }
 
 function handleMessageGetEvents(handler) {
-    handler({events: events});
+    handler({ events: events });
 }
 
 function handleMessageSetEvents(hander, newEvents) {
@@ -246,7 +290,7 @@ function handleMessageSetEvents(hander, newEvents) {
 function handleMessageGetSettings(handler) {
 
     var e = JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS));
-    if(e == 'null') {
+    if (e == 'null') {
         e = {};
     }
 
@@ -263,12 +307,12 @@ function handleMessageGetFilters(handler) {
 
     createFilterRegex();
     var e = JSON.parse(localStorage.getItem(STORAGE_KEY_FILTERS));
-    if(e == 'null') {
+    if (e == 'null') {
         e = {};
     }
 
     console.log(e)
-    handler({filters: e});
+    handler({ filters: e });
 }
 
 function handleMessageSetFilters(handler, newfilters) {
@@ -282,11 +326,11 @@ function findFilter(url) {
 
     var selectedFilter = undefined;
 
-    if(filtersPatternRegex != '') {
+    if (filtersPatternRegex != '') {
 
         var reg = RegExp(filtersPatternRegex, 'g');
         var res = url.match(reg);
-        if(res != null) {
+        if (res != null) {
             selectedFilter = filters[res[0]];
         }
     }
@@ -295,25 +339,25 @@ function findFilter(url) {
 }
 
 function processFilterRquest(url, type) {
-    
+
     var isCancel = { cancel: false };
     var filter = findFilter(url);
 
-    if(filter != undefined && filter.enable) {
-        var event = {event: 'webrequest', pattern: filter.pattern, date: new Date(), url: url, status: "pass"};
+    if (filter != undefined && filter.enable) {
+        var event = { event: 'webrequest', pattern: filter.pattern, date: new Date(), url: url, status: "pass" };
 
-        if(filter.blockAll) {
+        if (filter.blockAll) {
             isCancel.cancel = true;
             event.status = "block";
         } else {
 
-            if(filter.filters[type] != undefined) {
+            if (filter.filters[type] != undefined) {
                 isCancel.cancel = true;
                 event.status = "block";
             }
         }
 
-         setEvent(event);
+        setEvent(event);
     }
 
     return isCancel;
@@ -322,14 +366,14 @@ function processFilterRquest(url, type) {
 function processFilterDestroyWindow(url, tabId) {
 
     var filter = findFilter(url);
-   
-    if(filter != undefined && filter.enable) {
-        var event = {event: 'destroy-window', pattern: filter.pattern, date: new Date(), url: url, status: "pass"};
-        if(filter.destroyTab) {
-            chrome.tabs.remove(tabId, function() { 
-                delete tabs[tabId]; 
+
+    if (filter != undefined && filter.enable) {
+        var event = { event: 'destroy-window', pattern: filter.pattern, date: new Date(), url: url, status: "pass" };
+        if (filter.destroyTab) {
+            chrome.tabs.remove(tabId, function () {
+                delete tabs[tabId];
             });
-            
+
             event.status = "block";
         }
         setEvent(event);
@@ -358,11 +402,11 @@ function processList(details) {
                 tabs[[details.tabId]].counters.sameDomains = tabs[[details.tabId]].counters.sameDomains + 1;
             }
 
-            tabs[[details.tabId]].history[[hash]] = { domain: domain, hash: hash, counters: { requests: 0 }, types: {[details.type]: 1}};
+            tabs[[details.tabId]].history[[hash]] = { domain: domain, hash: hash, counters: { requests: 0 }, types: { [details.type]: 1 } };
 
         } else {
-            if(tabs[[details.tabId]].history[[hash]].types[details.type] == undefined) {
-                tabs[[details.tabId]].history[[hash]].types[details.type] = {[details.type]: 1};
+            if (tabs[[details.tabId]].history[[hash]].types[details.type] == undefined) {
+                tabs[[details.tabId]].history[[hash]].types[details.type] = { [details.type]: 1 };
             } else {
                 tabs[[details.tabId]].history[[hash]].types[details.type] = tabs[[details.tabId]].history[[hash]].types[details.type] + 1;
             }
@@ -374,9 +418,9 @@ function processList(details) {
 }
 
 function createFilterRegex() {
-    if(filters != undefined) {
+    if (filters != undefined) {
         filtersPatternRegex = '';
-        for(var key in filters) {
+        for (var key in filters) {
             filtersPatternRegex = filtersPatternRegex + key + "|";
         }
 

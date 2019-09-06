@@ -123,7 +123,12 @@ function editFilter(e) {
             $(checkboxes.CHK_FILRER_BLOCK_ALL).attr('checked', 'checked');
         } else {
             $(checkboxes.CHK_FILRER_BLOCK_ALL).removeAttr('checked');
+
+            for(var fkey in filters[key].filters) {
+                $('#chk_' + fkey).attr('checked', 'checked');
+            }
         }
+
 
         if(filters[key].destroyTab) {
             $(checkboxes.CHK_FILTER_DESTROY_TAB).attr('checked', 'checked');
@@ -136,6 +141,8 @@ function editFilter(e) {
         } else {
             $(checkboxes.CHK_FILTER_DELETE_COOKIE).removeAttr('checked');
         }
+
+        blockAllChange();
 
     }
 }
@@ -216,7 +223,7 @@ function saveFilter(e) {
         destroyTab = true;
     }
 
-    var filtersMedia = Array();
+    var filtersMedia = {};
 
     if (!blockAll) {
         var checks = $(wrappers.WRAPPER_ALL_FILTERS + ' input:checkbox:checked');
@@ -226,7 +233,10 @@ function saveFilter(e) {
             return isValid;
         } else {
             for (var i = 0; i < checks.length; i++) {
-                filtersMedia.push(checks[i].id.replace('chk_', '').trim());
+                var requestType = checks[i].id.replace('chk_', '');
+                if(filtersMedia[requestType] == undefined) {
+                    filtersMedia[requestType] = true;
+                }
             }
         }
     }
@@ -240,6 +250,11 @@ function saveFilter(e) {
     if (isValid) {
 
         var filter = { hash: createHash(pattern), pattern: pattern.toLowerCase(), blockAll: blockAll, deleteCookie: deleteCookie, destroyTab: destroyTab, filters: filtersMedia, enable: true, package: {type: "custom", version: "0"} };
+        
+        if(filters == null) {
+            filters = {};
+        }
+
         filters[pattern] = filter;
         $(textboxes.TXB_PATTERN).val('');
         chrome.runtime.sendMessage({ type: MESSAGE_SET_FILTERS, filters: filters }, storageFilter);
@@ -272,6 +287,7 @@ function displayEventsLogRows() {
                     + "<div style='width:100%'>pattern: <span style='color:#484848' title='" + events[i].pattern + "'>" + fixLength(events[i].pattern, URL_MAX_LENGTH, "...") + "</span></div>"
                     + "<div style='width:100%' title='" + events[i].url + "'>url: <span style='color:#484848'>" + fixLength(events[i].url, EVENT_MAX_LENGTH, "...") + "</span></div>"
                 + "</div>";
+                
                 $(wrappers.WRAPPER_EVENTS_LIST).append(ele); 
             }
         }

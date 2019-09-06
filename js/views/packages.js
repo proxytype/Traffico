@@ -1,4 +1,4 @@
-var REMOTE_PACKAGES = 'https://rudenetworks.com/traffico/packages.aspx';
+var REMOTE_PACKAGES = 'https://rudenetworks.com/traffico/api.aspx';
 var REQUEST_PACKAGES = '?method=packages';
 
 function loadPacakge() {
@@ -28,9 +28,21 @@ function loadPacakge() {
 function createPackageRow(package) {
     var ele = "<div class='ex-log-row'>"
                 + "<div style='width:100%; display:inline-block; font-size:12px'>"
-                    + "<div title='" + package.title + "'>" + fixLength(package.title, EVENT_MAX_LENGTH, "...") +"</div>"
-                    + "<div title='" + package.description + "' style='font-size:10px; color:#484848'>" + package.description.toLowerCase() + "</div>"
+                        + "<div style='width:100%; display:inline-block'>"
+                            + "<div title='" + package.title + "' style='float:left; margin-right:5px; margin-top:3px'>" + fixLength(package.title, EVENT_MAX_LENGTH, "...") +"</div>"
+                            + "<div style='float:right;'><div id='btn_pkg_" + package.package +"' class='ex-ui-icon-download' ptitle='" + package.title + "' package='"+ package.package + "' title='Download'></div></div>"   
+                        + "</div>"
+                        + "<div title='" + package.description + "' style='font-size:10px; color:#484848; margin-top:2px'>" + package.description.toLowerCase() + "</div>"
                 + "</div>"
             + "</div>";
     $(wrappers.WRAPPER_PACKAGES_LIST).append(ele);
+    $('#btn_pkg_' + package.package).on('click', installPackage);
+}
+
+function installPackage(e) {
+    var package = e.currentTarget.attributes.package.value;
+    var packageTitle = e.currentTarget.attributes.ptitle.value;
+    popup.displayDialog('Install Package', packageTitle + '<br/>Exists pattern will be overwrite.', true, function() {
+        console.log("approved");
+    }, undefined)
 }
