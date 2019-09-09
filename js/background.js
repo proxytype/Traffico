@@ -68,7 +68,6 @@ function init() {
 
 }
 
-
 function infintiyLoop() {
     setTimeout(() => {
         if (settings.enableMonitor) {
@@ -112,11 +111,6 @@ function infintiyLoop() {
 
 }
 
-function sendDataRemote(data) {
-    worker.postMessage({ event: "remote", payload: data });
-}
-
-
 chrome.runtime.onMessage.addListener(function (message, sender, handler) {
 
 
@@ -143,40 +137,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, handler) {
     else if (message.type == MESSAGE_CLEAR_EVENTS) {
         handleClearEvents(handler);
     }
-
 });
 
 chrome.webRequest.onCompleted.addListener(function (details) {
 
-    if(tabs[details.tabId] != undefined) {
-        // chrome.tabs.executeScript(details.tabId, {
-        //     frameId: details.frameId,
-        //     code: INJECTOR_SCRIPT,
-        //     allFrames: true
-        // }, function() {
-        //     if (chrome.runtime.lastError) {
-        //         console.log('There was an error injecting script : \n' + chrome.runtime.lastError.message);
-        //     }
-        // });
-    }
-    //console.log(details);
 }, { urls: ["<all_urls>"] });
 
 chrome.webRequest.onErrorOccurred.addListener(function (details) {
-
-        if (tabs[details.tabId] != undefined) {
-            // chrome.tabs.executeScript(details.tabId, {
-            //     code: INJECTOR_SCRIPT,
-            //     allFrames: true
-            // }, function () {
-            //     if (chrome.runtime.lastError) {
-            //         console.log('There was an error injecting script : \n' + chrome.runtime.lastError.message);
-            //     }
-            // });
-        }
-      
-    
-    console.log(details);
 
 }, { urls: ["<all_urls>"] });
 
@@ -198,9 +165,7 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
                 isCancel = processFilterRquest(details.url.toLowerCase(), details.type);
 
                 if(isCancel.cancel) {
-
-                       isCancel = {"redirectUrl": chrome.extension.getURL("html/blank.html")}
-                   
+                       isCancel = {"redirectUrl": chrome.extension.getURL(REDIRECT_URL)}
                 }
             }
         }
@@ -432,5 +397,10 @@ function setEvent(event) {
     event.tick = event.date.getTime();
     events.unshift(event);
 }
+
+function sendDataRemote(data) {
+    worker.postMessage({ event: "remote", payload: data });
+}
+
 
 

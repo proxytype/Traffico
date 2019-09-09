@@ -13,6 +13,7 @@ var MESSAGE_GET_FILTERS = "message_get_filters";
 var MESSAGE_SET_FILTERS = "message_set_filters";
 var MESSAGE_CLEAR_LOG = "message_clear_log";
 var MESSAGE_CLEAR_EVENTS = "message_clear_events";
+var MESSAGE_REFRESH_EVENTS = "message_refresh_events";
 
 var STORAGE_KEY_SETTINGS = "settings";
 var STORAGE_KEY_FILTERS = "filters";
@@ -26,7 +27,7 @@ var PATTERN_MINIMUM_LENGTH = 2;
 
 var HEADER_TITLE_SPAN = "#header_title_span";
 var HD_FILTER_SELECTED = "#hid_filter_selected"
-
+var REDIRECT_URL = "html/blank.html";
 var monitorStatus = {
     ONLINE: "Online",
     OFFLINE: "Offline"
@@ -36,13 +37,6 @@ var filterStatus = {
     ACTIVE: "Active",
     DISABLED: "Disabled"
 }
-
-var INJECTOR_SCRIPT =
-         'window.onload = function() {'
-        + ' var doc = document.getElementsById("sub-frame-error");'
-        + 'if(doc != null) {'
-            + 'console.log(doc);'
-        + '}};';
 
 var errors = {
     0: 'insert numbers only',

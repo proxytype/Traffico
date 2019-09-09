@@ -49,7 +49,6 @@ function init() {
         $(buttons.BTN_FILTERS_LOG).on('click', loadFilterLog);
         $(buttons.BTN_PACKAGE_DOWNLOAD).on('click', loadPacakge);
         $(buttons.BTN_EVENTS_DELETE).on('click', deleteEvents);
-        $(buttons.BTN_EVENTS_REFRESH).on('click', eventRefresh);
         $(buttons.BTN_ABOUT_UPDATES).on('click', checkForUpdates);
 
         $(checkboxes.CHK_FILRER_BLOCK_ALL).on('change', blockAllChange);
@@ -308,12 +307,10 @@ function saveSettings() {
 
 }
 
-function eventRefresh() {
 
-}
 
 function checkForUpdates() {
-
+    
 }
 
 

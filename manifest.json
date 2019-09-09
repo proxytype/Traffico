@@ -17,13 +17,16 @@
       "default_popup": "html/menu.html"
     },
   
+    "web_accessible_resources": [
+      "html/blank.html"
+   ],
+
     "background": {
       "scripts": [ "js/jquery.js",
         "js/common.js",
         "js/settings.js",
         "js/background.js",
-        "js/utilities/worker.js",
-        "js/utilities/injector.js" 
+        "js/utilities/worker.js"
       ],
       "persistent": true
     },

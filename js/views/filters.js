@@ -276,6 +276,7 @@ function blockAllChange() {
 function displayEventsLogRows() {
 
     if(events.length != 0) {
+        $(wrappers.WRAPPER_EVENTS_LIST).html('');
         for (var i = 0; i < events.length; i++){
             if($('#eve_' + events[i].tick).length == 0) {
                 var ele = "<div id='eve_" + events[i].tick + "' class='ex-log-row' index='" + i + "'>"
@@ -287,7 +288,7 @@ function displayEventsLogRows() {
                     + "<div style='width:100%'>pattern: <span style='color:#484848' title='" + events[i].pattern + "'>" + fixLength(events[i].pattern, URL_MAX_LENGTH, "...") + "</span></div>"
                     + "<div style='width:100%' title='" + events[i].url + "'>url: <span style='color:#484848'>" + fixLength(events[i].url, EVENT_MAX_LENGTH, "...") + "</span></div>"
                 + "</div>";
-                
+
                 $(wrappers.WRAPPER_EVENTS_LIST).append(ele); 
             }
         }

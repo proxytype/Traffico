@@ -20,9 +20,7 @@ var TrafficoSettings = function(){
     this.enableRedirect = true;
     this.paranoid = {low: DEFAULT_MIN_PARANOID_LEVEL_LOW, medium: DEFAULT_MIN_PARANOID_LEVEL_MEDIUM, high: DEFAULT_MIN_PARANOID_LELVEL_HIGH}
     this.isRunning = true;
-    
 }
-
 
 var Initiator = function() {
     this.id = undefined;
