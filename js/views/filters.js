@@ -142,6 +142,8 @@ function editFilter(e) {
             $(checkboxes.CHK_FILTER_DELETE_COOKIE).removeAttr('checked');
         }
 
+        $(HD_FILTER_SELECTED).val(key);
+
         blockAllChange();
 
     }
