@@ -69,7 +69,7 @@ function init() {
 }
 
 function infintiyLoop() {
-    setTimeout(() => {
+    
         if (settings.enableMonitor) {
             counters.callbacks = counters.callbacks + 1;
             counters.requests = counters.requests + tempRequests;
@@ -104,7 +104,8 @@ function infintiyLoop() {
             }
 
         }
-
+    
+    setTimeout(() => {
         infintiyLoop();
 
     }, parseInt(settings.refreshRate));
